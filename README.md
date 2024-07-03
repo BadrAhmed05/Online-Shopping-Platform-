@@ -36,4 +36,7 @@ Images:
 
 
 The entire application stack built and tested locally using Docker Compose, a tool that handles managing multiple containers, and defining and running multi-container Docker applications which is for ours, We made a Docker File for each service , Here is the docker file for web service as an example: 
+
+
+
 ![image](https://github.com/BadrAhmed05/Online-Shopping-Platform-/assets/93046762/a907eae8-c14c-424c-a8ef-40f889e16a51)
