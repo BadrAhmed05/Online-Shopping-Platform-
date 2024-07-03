@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nextjs
+spec:
+  containers:
+  - name: nextjs
+    image: hasura-ecommerce-nextjs:latest
+    ports:
+    - containerPort: 3000
+    volumeMounts:
+    - name: www-volume
+      mountPath: /app/www
+    - name: node-modules
+      mountPath: /app/node_modules
+    - name: next-dir
+      mountPath: /app/.next
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+  volumes:
+  - name: www-volume
+    hostPath:
+      path: /path/to/www
+  - name: node-modules
+    emptyDir: {}
+  - name: next-dir
+    emptyDir: {}

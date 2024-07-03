@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: app-replicaset
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: my-application
+  template:
+    metadata:
+      labels:
+        app: my-application
+    spec:
+      containers:
+      - name: server-container
+        image: hasura-ecommerce-nextjs:latest
+        ports:
+        - containerPort: 3000
+        volumes:
+        - ./hasura/migrations:/hasura-migrations
+        - ./hasura/metadata:/hasura-metadata
+        volumeMounts:
+        - name: app-volume
+          mountPath: /usr/src/app-volume
+        env:
+        - name: DATABASE_HOST
+          value: "DATABASE_HOST"
+        - name: DATABASE_PORT
+          value: "5432"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+      - name: worker-container
+        image: vendure-docker-compose-worker:latest
+        volumeMounts:
+        - name: app-volume
+          mountPath: /usr/src/app-volume
+        env:
+        - name: DATABASE_HOST
+          value: "DATABASE_HOST"
+        - name: DATABASE_PORT
+          value: "5432"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+      - name: storefront-container
+        image: vendure-docker-compose-storefront:latest
+        ports:
+        - containerPort: 4000
+        env:
+        - name: SERVER_API_HOST
+          value: "http://server"
+        - name: SHOP_API_HOST
+          value: "shop-api"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+      - name: database-container
+        image: postgres:latest
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_PASSWORD
+          value: "password"
+        - name: POSTGRES_DB
+          value: "vendure"
+        resources:
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+      volumes:
+      - name: app-volume
+        emptyDir: {}

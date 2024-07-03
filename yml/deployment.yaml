@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-rep
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-apprep
+  template:
+    metadata:
+      labels:
+        app: my-apprep
+    spec:
+      containers:
+      - name: graph
+        image: hasura/graphql-engine:v2.3.1.cli-migrations-v3
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: app-volume
+          mountPath: /usr/src/app-volume
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+      - name: minio
+        image: minio/minio:RELEASE.2021-06-17T00-10-46Z
+        volumeMounts:
+        - name: app-volume
+          mountPath: /usr/src/app-volume
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+      - name: next
+        image: hasura-ecommerce-nextjs:latest
+        ports:
+        - containerPort: 3000
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+      - name: postgress
+        image: postgres:13
+        ports:
+        - containerPort: 5432
+        resources:
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+      volumes:
+      - name: app-volume
+        emptyDir: {}

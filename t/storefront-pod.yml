@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: storefront-pod
+spec:
+  containers:
+  - name: storefront-pod
+    image: vendure-docker-compose-storefront:latest
+    ports:
+    - containerPort: 4000
+    env:
+    - name: SERVER_API_HOST
+      value: http://server
+    - name: SERVER_API_HOST
+      value: shop-api
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: postgres
+spec:
+  containers:
+  - name: postgres
+    image: hasura/graphql-engine:v2.3.1.cli-migrations-v3
+    ports:
+    - containerPort: 5432
+    environment:
+      POSTGRES_PASSWORD: postgrespassword
+    resources:
+      limits:
+        memory: "1Gi"
+        cpu: "1"
+    
